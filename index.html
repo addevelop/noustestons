@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <style>
+        body {
+            width: 100vw;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container-fluid
+        {
+            padding: 0;
+            margin: 0;
+        }
+        .cal
+        {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 0 0.5em #333;
+            padding: 0.5em;
+        }
+    </style>
+</head>
+
+<body>
+    <section class="container-fluid">
+
+        <section style="position: absolute; width: 100%; height: 100%; backdrop-filter: blur(2px);"
+            class="container-fluid" id="scorecompte">
+
+            <p id="compte" class="text-center" style="font-size: 3em; "></p>
+
+
+
+        </section>
+        <section class="container" style="display: none;" id="input">
+            <div class="row">
+                <p class="text-center" style="font-size: 3em" id="cpt"></p>
+            </div>
+
+            <div class="row">
+
+                <p class="text-center"><span id="calcules" style="font-size: 2.5em;"></span>
+                    <input id="resultat" style="font-size: 1.5em;" type="text" inputmode="numeric" /><br /><br />
+                </p>
+            </div>
+            <div class="row" style="display: flex; justify-content: center;">
+                <table style="width: 16em;">
+                    <tr>
+                        <td>
+                            <button class="cal" onclick="document.getElementById('resultat').value += '1'">1</button>
+                        </td>
+                        <td>
+                            <button class="cal" onclick="document.getElementById('resultat').value += '2'">2</button>
+                        </td>
+                        <td>
+                            <button class="cal" onclick="document.getElementById('resultat').value += '3'">3</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <button class="cal" onclick="document.getElementById('resultat').value += '4'">4</button>
+                        </td>
+                        <td>
+                            <button class="cal" onclick="document.getElementById('resultat').value += '5'">5</button>
+                        </td>
+                        <td>
+                            <button class="cal" onclick="document.getElementById('resultat').value += '6'">6</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <button class="cal" onclick="document.getElementById('resultat').value += '7'">7</button>
+                        </td>
+                        <td>
+                            <button class="cal" onclick="document.getElementById('resultat').value += '8'">8</button>
+                        </td>
+                        <td>
+                            <button class="cal"  onclick="document.getElementById('resultat').value += '9'">9</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <button class="cal" onclick="document.getElementById('resultat').value += '-'">-</button>
+                        </td>
+                        <td>
+                            <button class="cal" onclick="document.getElementById('resultat').value += '0'">0</button>
+                        </td>
+                        <td>
+                            <button class="cal" onclick="ecr()"><</button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="row"><br />
+                <p class="text-center">Calcul : <span id="numcalcul"></span>/10</p>
+            </div>
+        </section>
+    </section>
+    <script>
+
+        var calc = document.getElementById('calcules');
+        var result = document.getElementById('resultat');
+        var presult = document.getElementById('presultat');
+        var nb1;
+        var nb2;
+        var listenb = [nb1, nb2]
+        var listesmb = ["+", "x", "-"];
+        var smb = "";
+        var smbc;
+        var liste = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        var calcule;
+        var reponse;
+        var tme = 10;
+        var cpt = 5;
+        var score = 0;
+        var listecalcules = [];
+        var listereponses = [];
+        var inttime;
+        var listereps = [];
+        var calculereps = [];
+        var cnt = 0;
+        
+        function ecr()
+        {
+            ec = document.getElementById('resultat').value;
+            ect = ec.substring(0, ec.length-1);
+            document.getElementById('resultat').value = ect;
+        }
+        // quand la page s'ouvre la fonction temps se lance
+        window.onload = function () {
+            temps();
+        }
+
+        //temps gère le timer qu'il y a au debut avant que le calcul mental commence
+        function temps() {
+            if (tme == -1) {
+                clearInterval(ti);
+                document.getElementById('scorecompte').style.display = "none";
+                lancement();
+                document.getElementById('input').style.display = "block";
+                temps2();
+                inttemps2()
+            }
+            else {
+                document.getElementById('compte').innerHTML = "Le calcul mental commence dans<br/> <span style='font-weight: bold;'>" + tme + "</span> secondes";
+                tme--;
+            }
+        }
+        ti = setInterval(temps, 1100)
+
+
+        //lancement permet de faire les calcules
+        function lancement() {
+
+            if (listecalcules.length < 10) {
+                for (i = 0; i < 2; i++) {
+                    listenb[i] = parseInt(Math.random() * 11)
+
+                }
+                for (i = 0; i < 1; i++) {
+                    smb = listesmb[parseInt(Math.random() * 3)]
+                }
+
+                if (smb == "x") {
+                    smbc = "*";
+                }
+                else if (smb == "-") {
+                    smbc = "-";
+                }
+                else if (smb == "+") {
+                    smbc = "+";
+                }
+                calcule = listenb[0] + smb + listenb[1];
+                reponse = eval(listenb[0] + smbc + listenb[1]);
+                calc.innerHTML = calcule + " = ";
+                listecalcules.push(listenb[0] + smb + listenb[1]);
+                listereponses.push(eval(listenb[0] + smbc + listenb[1]));
+                document.getElementById('numcalcul').innerText = listecalcules.length;
+                cpt = 5;
+            }
+            else {
+                clearInterval(etimer);
+                printscore();
+
+            }
+
+        }
+
+        function temps2() {
+            if (cpt == -1) {
+                if (reponse == result.value && result.value != "") {
+                    score++;
+                    listereps.push(listecalcules.length - 1);
+
+                }
+                else {
+                    cnt = -1;
+                    listereps.push(cnt);
+                }
+                calculereps.push(result.value);
+                result.value = "";
+                lancement();
+            }
+            else {
+                document.getElementById('cpt').innerHTML = "Temps restant : <br/><span style='font-weight: bold'>" + cpt + "</span>";
+                cpt--;
+
+            }
+
+
+        }
+
+        function inttemps2() {
+
+            etimer = setInterval(temps2, 1000);
+
+        }
+
+        function printscore() {
+            document.getElementById('input').style.display = "none";
+            document.getElementById('scorecompte').style.display = "block";
+            document.getElementById('compte').innerHTML = "Votre score est de <b>" + score + "</b> sur <b>10</b>";
+            for (i = 0; i < listecalcules.length; i++) {
+
+                if (listereps[i] == i) {
+                    document.getElementById('compte').innerHTML += "<br/><span>" + listecalcules[i] + " = " + listereponses[i] + "</span>";
+                }
+                else {
+                    document.getElementById('compte').innerHTML += "<br/><span style='color: red;'>" + listecalcules[i] + " = " + "<strike>" + calculereps[i] + "</strike> " + listereponses[i] + "</span>";
+                }
+            }
+        }
+
+    </script>
+</body>
+
+</html>
